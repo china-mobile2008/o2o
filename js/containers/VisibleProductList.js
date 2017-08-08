@@ -7,7 +7,7 @@ import {
   StyleSheet,
   RefreshControl } from 'react-native'
 import StorefrontPicker from '../components/StorefrontPicker'
-import { fetchProducts, fetchEtalase, pullToRefresh } from '../actions/index'
+import { fetchProducts, fetchEtalase, pullToRefresh, onEtalaseChange, resetProductList } from '../actions/index'
 import Product from '../components/Product'
 
 class VisibleProductList extends Component {
@@ -15,14 +15,25 @@ class VisibleProductList extends Component {
     super(props)
   }
 
-  onPickerChange = () => {
+  onPickerChange = (value, index) => {
+    console.log('onPickerChange called')
+    const etalaseId = value
+    if (index === 0) {
+      return
+    }
 
+    this.props.dispatch(onEtalaseChange(etalaseId))
+    this.props.dispatch(resetProductList())
+    setTimeout(() => {
+      this.props.dispatch(fetchProducts(67726, 0, 25, value))
+    }, 500)
   }
 
   componentDidMount() {
     const { dispatch } = this.props
     const { start, rows } = this.props.products.pagination
     dispatch(fetchProducts(67726, start, rows))
+    console.log('componentDidMount called')
     dispatch(fetchEtalase(67726))
   }
 
@@ -31,18 +42,21 @@ class VisibleProductList extends Component {
   }
 
   loadMore = () => {
-    if (this.props.products.isFetching) {
+    if (this.props.products.isFetching || !this.props.products.canLoadMore) {
       return
     }
+    console.log('loadMore called')
     const { start, rows } = this.props.products.pagination
-    this.props.dispatch(fetchProducts(67726, start, rows))
+    const etalaseId = this.props.etalases.selected
+    this.props.dispatch(fetchProducts(67726, start, rows, etalaseId))
   }
 
   handleRefresh = () => {
     const { dispatch } = this.props
+    const selectedEtalase = this.props.etalases.selected
 
     dispatch(pullToRefresh())
-    dispatch(fetchProducts(67726, 0, 25))
+    dispatch(fetchProducts(67726, 0, 25, selectedEtalase))
     dispatch(fetchEtalase(67726))
   }
 
@@ -51,11 +65,13 @@ class VisibleProductList extends Component {
     const fetchInProgress = this.props.products.isFetching
     const etalases = this.props.etalases.items
     const refreshing = this.props.products.refreshing
+    const selectedEtalase = this.props.etalases.selected
+    console.log(selectedEtalase)
 
     return (
       <View>
         <StorefrontPicker
-          value='abc'
+          value={selectedEtalase}
           onChange={this.onPickerChange}
           options={etalases} />
 
@@ -84,8 +100,7 @@ class VisibleProductList extends Component {
 const mapStateToProps = state => {
   const products = state.products
   const etalases = state.etalase
-  const refreshing = state.products.refreshing
-  
+
   return {
     products,
     etalases

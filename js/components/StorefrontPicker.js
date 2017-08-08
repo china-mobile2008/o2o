@@ -5,12 +5,14 @@ import PropTypes from 'prop-types'
 export default class StorefrontPicker extends Component {
   render() {
     const { value, onChange, options } = this.props
+    const val = value.toString()
     return (
       <Picker
         style={styles.container}
-        selectedValue={value}>
+        onValueChange={onChange}
+        selectedValue={val}>
         {
-          options.map(e => <Picker.Item label={e.name} value={e.alias} key={e.id}/>)
+          options.map(e => <Picker.Item label={e.name} value={e.id.toString()} key={e.id}/>)
         }
       </Picker>
     )

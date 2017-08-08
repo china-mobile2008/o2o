@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import { PENDING, FULFILLED, REJECTED } from 'redux-promise-middleware'
-import { FETCH_PRODUCTS, FETCH_ETALASE, PULL_TO_REFRESH } from '../actions/index'
+import { FETCH_PRODUCTS, FETCH_ETALASE, PULL_TO_REFRESH, ON_ETALASE_CHANGE, RESET_PRODUCT_LIST } from '../actions/index'
 
 const products = (state = {
   items: [],
@@ -10,6 +10,7 @@ const products = (state = {
   },
   isFetching: false,
   refreshing: false,
+  canLoadMore: false,
 }, action) => {
   switch (action.type) {
     case `${FETCH_PRODUCTS}_${PENDING}`:
@@ -20,7 +21,7 @@ const products = (state = {
     case `${FETCH_PRODUCTS}_${FULFILLED}`:
       const products = action.payload.data.data.products || []
       const items = [...state.items, ...products]
-
+      const nextUrl = action.payload.data.data.paging.uri_next
       const pagination = {
         ...state.pagination,
         start: items.length
@@ -30,6 +31,7 @@ const products = (state = {
         pagination,
         isFetching: false,
         refreshing: false,
+        canLoadMore: nextUrl ? true: false,
       }
     case `${FETCH_PRODUCTS}_${REJECTED}`:
       return {
@@ -37,7 +39,7 @@ const products = (state = {
         isFetching: false,
         refreshing: false,
       }
-    case 'PULL_TO_REFRESH':
+    case PULL_TO_REFRESH:
       return {
         items: [],
         pagination: {
@@ -46,6 +48,15 @@ const products = (state = {
         },
         isFetching: false,
         refreshing: true
+      }
+    case RESET_PRODUCT_LIST:
+      return {
+        ...state,
+        items: [],
+        pagination: {
+          start: 0,
+          rows: 25,
+        },
       }
     default:
       return state
@@ -57,7 +68,8 @@ const etalase = (state = {
     id: '0',
     name: 'All Products',
     alias: 'all_products'
-  }]
+  }],
+  selected: '0'  
 }, action) => {
   switch (action.type) {
     case `${FETCH_ETALASE}_${PENDING}`:
@@ -66,13 +78,20 @@ const etalase = (state = {
       const etalases = action.payload.data.data.map(e => ({
         id: e.menu_id,
         name: e.menu_name,
-        alias: e.menu_alias
+        alias: e.menu_alias,
       }))
 
       return {
+        ...state,
         items: [...state.items, ...etalases]
       }
     case `${FETCH_ETALASE}_${REJECTED}`:
+      return state
+    case ON_ETALASE_CHANGE:
+      return {
+        ...state,
+        selected: action.payload,
+      }
     default:
       return state
   }
