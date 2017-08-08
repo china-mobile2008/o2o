@@ -50,6 +50,7 @@ class VisibleProductList extends Component {
     const products = this.props.products.items
     const fetchInProgress = this.props.products.isFetching
     const etalases = this.props.etalases.items
+    const refreshing = this.props.products.refreshing
 
     return (
       <View>
@@ -68,7 +69,7 @@ class VisibleProductList extends Component {
           numColumns={3}
           refreshControl={
             <RefreshControl
-              refreshing={false}
+              refreshing={refreshing}
               onRefresh={this.handleRefresh}
               title="Pull to refresh"
               colors={['#42b549']}
@@ -83,6 +84,8 @@ class VisibleProductList extends Component {
 const mapStateToProps = state => {
   const products = state.products
   const etalases = state.etalase
+  const refreshing = state.products.refreshing
+  
   return {
     products,
     etalases
