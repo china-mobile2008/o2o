@@ -19,7 +19,7 @@ const products = (state = {
       }
     case `${FETCH_PRODUCTS}_${FULFILLED}`:
       const products = action.payload.data.data.products || []
-      const items = [ ...state.items, ...products]
+      const items = [...state.items, ...products]
 
       const pagination = {
         ...state.pagination,
@@ -38,25 +38,15 @@ const products = (state = {
         refreshing: false,
       }
     case 'PULL_TO_REFRESH':
-    console.log('PULL_TO_REFRESH called')
-    return Object.assign({}, state, {
-      items: [],
-      pagination: {
-        start: 0,
-        rows: 25,
-      },
-      isFetching: false,
-      refreshing: true
-    })
-      // return {
-      //   items: [],
-      //   pagination: {
-      //     start: 0,
-      //     rows: 25,
-      //   },
-      //   isFetching: false,
-      //   refreshing: true
-      // }
+      return {
+        items: [],
+        pagination: {
+          start: 0,
+          rows: 25,
+        },
+        isFetching: false,
+        refreshing: true
+      }
     default:
       return state
   }

@@ -2,7 +2,6 @@ import axios from 'axios'
 
 export const FETCH_PRODUCTS = 'FETCH_PRODUCTS'
 export const fetchProducts = (shopId, start, rows) => {
-  console.log(shopId, start, rows)
   return {
     type: FETCH_PRODUCTS,
     payload: axios.get(`https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&rows=${rows}&shop_id=${shopId}&start=${start}`)
