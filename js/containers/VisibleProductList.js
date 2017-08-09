@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
   View,
-  ProgressBarAndroid,
   FlatList,
   StyleSheet,
-  RefreshControl } from 'react-native'
+  RefreshControl,
+  ActivityIndicator
+} from 'react-native'
 import StorefrontPicker from '../components/StorefrontPicker'
 import { fetchProducts, fetchEtalase, pullToRefresh, onEtalaseChange, resetProductList } from '../actions/index'
 import Product from '../components/Product'
@@ -66,7 +67,6 @@ class VisibleProductList extends Component {
     const etalases = this.props.etalases.items
     const refreshing = this.props.products.refreshing
     const selectedEtalase = this.props.etalases.selected
-    console.log(selectedEtalase)
 
     return (
       <View>
@@ -74,8 +74,7 @@ class VisibleProductList extends Component {
           value={selectedEtalase}
           onChange={this.onPickerChange}
           options={etalases} />
-
-        <FlatList
+        {products.length > 0 && <FlatList
           contentContainerStyle={styles.container}
           data={products}
           keyExtractor={item => item.id}
@@ -91,7 +90,8 @@ class VisibleProductList extends Component {
               colors={['#42b549']}
             />
           }
-        />
+        />}
+        {(fetchInProgress && !refreshing) && <ActivityIndicator size='large' />}
       </View>
     )
   }

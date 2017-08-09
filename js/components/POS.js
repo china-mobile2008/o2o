@@ -7,7 +7,6 @@ export default class POS extends Component {
     return (
       <View style={styles.container}>
         <VisibleProductList />
-        <Text>Here will be the product list</Text>
       </View>
     )
   }
