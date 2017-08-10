@@ -12,7 +12,7 @@ export default class StorefrontPicker extends Component {
         onValueChange={onChange}
         selectedValue={val}>
         {
-          options.map(e => <Picker.Item label={e.name} value={e.id.toString()} key={e.id}/>)
+          options.map(e => <Picker.Item label={e.name} value={e.id.toString()} key={e.id} />)
         }
       </Picker>
     )
@@ -28,6 +28,6 @@ StorefrontPicker.propTypes = {
 const styles = StyleSheet.create({
   container: {
     width: 200,
-    height: 100
+    height: 50,
   }
 })
