@@ -27,18 +27,25 @@ export default class POS extends Component {
 
     return (
       <DrawerLayoutAndroid
-        drawerWidth={300}
+        drawerWidth={Dimensions.get('window').width/2}
         drawerPosition={DrawerLayoutAndroid.positions.Left}
         ref={(drawer) => { this.drawerPane = drawer; }}
         renderNavigationView={() => navigationView}>
         <View style={styles.container}>
-          <ToolbarAndroid style={{ width: Dimensions.get('window').width, height: 60, backgroundColor: 'grey' }}
+          <ToolbarAndroid style={{ width: Dimensions.get('window').width, height: 60, backgroundColor: '#42b549' }}
             navIcon={require('./img/icon-burgermenu.png')}
             onIconClicked={this.onIconClick}
-            actions={[{ title: 'Add To Cart', icon: require('./img/icon-Cart.png'), show: 'always' }]}
+            actions={[
+              {
+                title: 'Credit Card',
+                icon: require('./img/icon-CreditCards-Info.png'),
+                show: 'always'
+              },
+              { title: 'Add To Cart',
+                icon: require('./img/icon-Cart.png'),
+                show: 'always'
+              },]}
             onActionSelected={this.onActionSelected}>
-            {/* <View style={{backgroundColor: 'grey', borderRadius: 3,}}> */}
-            {/* <Text>dkajbkajbfakjbsdkajsdakjsbdakjbddkjfnskdjfnskjdfn</Text> */}
             <TextInput
               style={{
                 borderWidth: 1,
@@ -52,7 +59,6 @@ export default class POS extends Component {
               placeholder='tokopedia                                                                    '
               underlineColorAndroid='transparent'
             />
-            {/* </View> */}
           </ToolbarAndroid>
           <VisibleProductList />
         </View>
@@ -65,8 +71,7 @@ export default class POS extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightgrey',
+    backgroundColor: 'rgba(0,0,0,.05)',
     alignItems: 'center',
-    // justifyContent: 'flex-start',
   },
 })
